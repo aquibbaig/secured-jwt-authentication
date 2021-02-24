@@ -1,12 +1,18 @@
 import { hash, compare } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
-import {Resolver, Query, Mutation, Arg, ObjectType, Field} from 'type-graphql';
+import {Resolver, Query, Mutation, Arg, ObjectType, Field, Ctx} from 'type-graphql';
 import { User } from './entity/User';
+import { Request, Response } from 'express';
+import { createAccessToken, createRefreshToken } from './utils/auth';
 
 @ObjectType()
 class LoginResponse {
   @Field()
   accessToken: string
+}
+
+interface MyContext {
+  req: Request,
+  res: Response
 }
 
 @Resolver()
@@ -19,7 +25,8 @@ export class UserResolver  {
   @Mutation(() => LoginResponse)
   async login(
     @Arg('email') email: string,
-    @Arg('password') password: string
+    @Arg('password') password: string,
+    @Ctx() {res}: MyContext
   ): Promise<LoginResponse> {
     const user = await User.findOne({email});
 
@@ -30,8 +37,18 @@ export class UserResolver  {
     if (!valid) {
       throw new Error("Bad login")
     }
+
+    // refresh token
+    res.cookie(
+      'jwid',
+      createRefreshToken(user),
+      {
+        httpOnly: true
+      }
+    )
+    // access token
     return {
-      accessToken: sign({ userId: user.id}, "my_secret", {expiresIn: "15m"}),
+      accessToken: createAccessToken(user),
     }
   }
 
