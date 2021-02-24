@@ -1,5 +1,5 @@
 import "reflect-metadata";
-// import {createConnection} from "typeorm";
+import {createConnection} from "typeorm";
 import express from 'express';
 // import {User} from "./entity/User";
 import { ApolloServer } from 'apollo-server-express';
@@ -9,6 +9,8 @@ import { UserResolver } from "./resolvers";
 (async () => {
   const app = express();
   app.get('/', (_, res) => res.send('Hello world'));
+
+  await createConnection();
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
