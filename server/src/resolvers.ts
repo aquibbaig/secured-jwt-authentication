@@ -1,8 +1,9 @@
 import { hash, compare } from 'bcryptjs';
-import {Resolver, Query, Mutation, Arg, ObjectType, Field, Ctx} from 'type-graphql';
+import {Resolver, Query, Mutation, Arg, ObjectType, Field, Ctx, UseMiddleware} from 'type-graphql';
 import { User } from './entity/User';
 import { Request, Response } from 'express';
 import { createAccessToken, createRefreshToken } from './utils/auth';
+import { isAuth } from './middlewares/isAuth';
 
 @ObjectType()
 class LoginResponse {
@@ -10,9 +11,10 @@ class LoginResponse {
   accessToken: string
 }
 
-interface MyContext {
+export interface MyContext {
   req: Request,
-  res: Response
+  res: Response,
+  payload?: { userId: string }
 }
 
 @Resolver()
@@ -20,6 +22,14 @@ export class UserResolver  {
   @Query(() => [User])
   users() {
     return User.find();
+  }
+
+  @UseMiddleware(isAuth)
+  @Query(() => String)
+  protected(
+    @Ctx() {payload}: MyContext
+  ) {
+    return `Your user id is ${payload!.userId}`
   }
 
   @Mutation(() => LoginResponse)
