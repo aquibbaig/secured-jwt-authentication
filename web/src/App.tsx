@@ -1,9 +1,20 @@
 import React from "react";
+import { gql, useQuery } from "@apollo/react-hooks";
 
 function App() {
-  return (
-    <React.Fragment>Hello</React.Fragment>
-  );
+  const {data, loading} = useQuery(gql`
+    query {
+      users {
+        email
+        id
+      }
+    }
+  `);
+  if (loading) {
+    return <>Loading...</>
+  }
+
+  return <div>{JSON.stringify(data)}</div>
 }
 
 export default App;
