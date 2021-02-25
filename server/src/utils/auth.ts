@@ -6,5 +6,5 @@ export const createAccessToken = (user: User): string => {
 }
 
 export const createRefreshToken = (user: User): string => {
-  return sign({userId: user.id}, "refresh_secret", {expiresIn: "7d"});
+  return sign({userId: user.id, tokenVersion: user.tokenVersion}, "refresh_secret", {expiresIn: "7d"});
 }

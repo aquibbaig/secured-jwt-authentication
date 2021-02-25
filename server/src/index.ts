@@ -41,6 +41,11 @@ import { createAccessToken, createRefreshToken } from "./utils/auth";
       return res.send({ ok: false, accessToken: '' });
     }
 
+
+    if (user.tokenVersion !== (payload as any).tokenVersion) {
+      return res.send({ ok: false, accessToken: '' });
+    }
+
     // create a new refresh token also when user
     // issues a new access token
     res.cookie("jwid", createRefreshToken(user), {
