@@ -1,16 +1,11 @@
 import React from "react";
 import { gql, useQuery } from "@apollo/react-hooks";
+import { useGetUsersQuery } from "./generated/graphql";
 
 function App() {
-  const {data, loading} = useQuery(gql`
-    query {
-      users {
-        email
-        id
-      }
-    }
-  `);
-  if (loading) {
+  const {data, loading} = useGetUsersQuery();
+  
+  if (loading || !data) {
     return <>Loading...</>
   }
 
