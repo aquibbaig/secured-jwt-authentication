@@ -1,17 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useLoginMutation } from "../generated/graphql";
+import { setToken } from "../accessToken";
+import { links } from "./Home";
 
 export const Login = ({ history }:any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const links = (
-    <div>
-      <Link to="/">Home</Link><br/>
-      <Link to="/login">Login</Link><br/>
-      <Link to="/signup">Signup</Link><br/><br/>
-    </div>
-  );
   const [login] = useLoginMutation();
   return (
     <div>
@@ -24,7 +18,10 @@ export const Login = ({ history }:any) => {
             password
           }
         });
-        console.log(response);
+
+        if (response && response.data) {
+          setToken(response.data.login.accessToken);
+        }
         history.push('/');
       }}>
         <input value={email} placeholder='Enter email' type="text" onChange={e => setEmail(e.target.value)}/><br/>

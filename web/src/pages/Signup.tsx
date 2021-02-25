@@ -1,18 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useRegisterMutation } from "../generated/graphql";
+import { links } from "./Home";
 
 export const Signup = ({ history }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [register] = useRegisterMutation();
-  const links = (
-    <div>
-      <Link to="/">Home</Link><br/>
-      <Link to="/login">Login</Link><br/>
-      <Link to="/signup">Signup</Link><br/><br/>
-    </div>
-  );
   return (
     <div>
       {links}
