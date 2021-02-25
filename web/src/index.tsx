@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Routes } from './routes/Routes';
 import reportWebVitals from './reportWebVitals';
 import { ApolloProvider, ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
 import { getToken } from './accessToken';
+import App from './App';
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token
@@ -31,7 +31,7 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <Routes/>
+    <App/>
   </ApolloProvider>,
   document.getElementById('root')
 );
